@@ -2,6 +2,10 @@
 
 An OpenAI-compatible API proxy with LLM trace visualization using Langfuse.
 
+## Usage
+![image](https://github.com/user-attachments/assets/6a6986c2-3131-46dc-8a1d-2642720e0f6e)
+![image](https://github.com/user-attachments/assets/6570cbfb-a154-493f-9eb0-699cd450127d)
+
 ## Features
 
 - OpenAI API compatible endpoints
@@ -32,8 +36,8 @@ cp .env-example .env
 3. Update the `.env` file with your API keys and configuration:
 ```bash
 # OpenAI/DeepSeek API
-DEEPSEEK_API_KEY=your-api-key
-DEEPSEEK_API_URL=https://api.deepseek.com/v1
+OPENAI_API_KEY=your-api-key
+OPENAI_API_URL=https://api.deepseek.com
 
 # Langfuse Configuration
 LANGFUSE_PUBLIC_KEY=your-public-key
@@ -129,16 +133,11 @@ uvicorn main:app --reload
 
 The following environment variables are required:
 
-- `DEEPSEEK_API_KEY`: Your DeepSeek API key
-- `DEEPSEEK_API_URL`: DeepSeek API endpoint
+- `OPENAI_API_KEY`: Your DeepSeek API key
+- `OPENAI_API_URL`: DeepSeek API endpoint
 - `LANGFUSE_PUBLIC_KEY`: Langfuse public key
 - `LANGFUSE_SECRET_KEY`: Langfuse secret key
 - `LANGFUSE_HOST`: Langfuse host URL
-
-## Usage
-![image](https://github.com/user-attachments/assets/6a6986c2-3131-46dc-8a1d-2642720e0f6e)
-![image](https://github.com/user-attachments/assets/6570cbfb-a154-493f-9eb0-699cd450127d)
-
 
 ## License
 
