@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "localllminspect"
+name = "LocalLLMTrace"
 version = "0.1.0"
-description = "Local LLM Inspector - OpenAI-compatible API proxy with LLM trace visualization"
-authors = ["Your Name <you@example.com>"]
+description = "Local LLM Trace - OpenAI-compatible API proxy with LLM trace visualization"
+authors = ["JourneyPeng <pjwhusir@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
