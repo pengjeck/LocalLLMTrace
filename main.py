@@ -38,8 +38,8 @@ app = FastAPI(title="Local LLM Inspector",
 
 # Initialize OpenAI client
 client = OpenAI(
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
-    base_url=os.getenv("DEEPSEEK_API_URL"))
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url=os.getenv("OPENAI_BASE_URL"))
 
 # Enable CORS
 # app.add_middleware(
@@ -65,9 +65,9 @@ class StreamOptions(BaseModel):
 
 class ChatInput(BaseModel):
     model: str
-    messages: List[ChatMessage]
-    temperature: Optional[float]
-    stream: bool
+    messages: List[ChatMessage] = []
+    temperature: Optional[float] = 0.5
+    stream: Optional[bool] = False
     max_tokens: Optional[int] = 4096
     stream_options: Optional[StreamOptions] = None
 
@@ -146,7 +146,7 @@ async def chat_completion(request: ChatInput):
         
         else:
             # Handle non-streaming response
-            response = await client.chat.completions.create(
+            response = client.chat.completions.create(
                 model=request.model,
                 messages=[msg.model_dump() for msg in request.messages],
                 temperature=request.temperature,
