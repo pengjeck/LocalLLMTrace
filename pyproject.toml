@@ -4,25 +4,30 @@ version = "0.1.0"
 description = "Local LLM Trace - OpenAI-compatible API proxy with LLM trace visualization"
 authors = ["JourneyPeng <pjwhusir@gmail.com>"]
 license = "MIT"
+package-mode = false
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4.0"
+python = ">=3.9,<3.13"
 fastapi = "^0.115.6"
 uvicorn = "^0.34.0"
 httpx = "^0.28.1"
 python-dotenv = "^1.0.0"
-langfuse = "^2.57.7"
 openai = "^1.12.0"
+# opentelemetry-api = "^1.24.0"
+# opentelemetry-sdk = "^1.24.0"
+# opentelemetry-exporter-otlp = "^1.24.0"
+# opentelemetry-instrumentation-fastapi = "^0.45b0"
+# arize-phoenix = "^0.15.0"
+arize-phoenix = "^7.8.1"
+arize-phoenix-otel = "^0.6.1"
+openinference-instrumentation-openai = "^0.1.18"
 
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = "^23.0"
 flake8 = "^6.0"
 mypy = "^1.0"
-
-[tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
-httpx = "^0.28.1"
 pytest-asyncio = "^0.25.2"
 
 [build-system]

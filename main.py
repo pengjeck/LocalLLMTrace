@@ -9,9 +9,9 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 
-# Langfuse imports
-from langfuse import Langfuse
-from langfuse import Langfuse
+from openinference.instrumentation.openai import OpenAIInstrumentor
+from phoenix.otel import register
+
 
 load_dotenv()
 
@@ -26,12 +26,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Initialize Langfuse
-langfuse = Langfuse(
-    public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
-    secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
-    host=os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
+
+tracer_provider = register(
+  project_name="local-llm-trace", # Default is 'default'
+  endpoint="http://localhost:6006/v1/traces",
 )
+OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
 
 app = FastAPI(title="Local LLM Inspector",
               description="OpenAI-compatible API proxy with LLM trace visualization")
@@ -40,15 +40,6 @@ app = FastAPI(title="Local LLM Inspector",
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
     base_url=os.getenv("OPENAI_BASE_URL"))
-
-# Enable CORS
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     # allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
 
 class ContentText(BaseModel):
     type: str
@@ -91,22 +82,6 @@ async def chat_completion(request: ChatInput):
                     detail="Invalid request: missing required fields"
                 )
     
-    trace = langfuse.trace(
-        name="chat_completion",
-        input=request.messages,
-        metadata={
-            "model": request.model,
-            "temperature": request.temperature,
-            "max_tokens": request.max_tokens,
-            "stream": request.stream
-        }
-    )
-    
-    span = trace.span(
-        name="chat_completion",
-        input=request.messages
-    )
-    
     try:
         if request.stream:
             # Handle streaming response
@@ -125,21 +100,8 @@ async def chat_completion(request: ChatInput):
                     for chunk in response:
                         yield f"data: {chunk.json()}\n\n"
                     
-                    # Record streaming completion
-                    span.update(
-                        output="[streaming completed]",
-                        metadata={
-                            "status_code": 200
-                        }
-                    )
                 except Exception as e:
                     logger.error(f"Error during streaming: {str(e)}")
-                    span.update(
-                        output=None,
-                        metadata={
-                            "error_message": str(e)
-                        }
-                    )
                     raise
                 
             return StreamingResponse(stream_response(), media_type="text/event-stream")
@@ -154,28 +116,11 @@ async def chat_completion(request: ChatInput):
             )
             
             logger.info("Received successful response from OpenAI API")
-            
-            # Record successful response
-            span.update(
-                output=response,
-                metadata={
-                    "status_code": 200
-                }
-            )
-            
             return response
     except Exception as e:
         logger.error(
             f"OpenAI API error: {str(e)}",
             exc_info=True
-        )
-        
-        # Record error details
-        span.update(
-            output=None,
-            metadata={
-                "error_message": str(e)
-            }
         )
         
         raise HTTPException(

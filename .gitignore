@@ -3,3 +3,5 @@ poetry.lock
 .env
 
 app.log
+
+__pycache__/

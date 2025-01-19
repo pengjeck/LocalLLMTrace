@@ -1,24 +1,19 @@
 # Local LLM Inspector
 
-An OpenAI-compatible API proxy with LLM trace visualization using Langfuse.
-
-## Usage
-![image](https://github.com/user-attachments/assets/6a6986c2-3131-46dc-8a1d-2642720e0f6e)
-![image](https://github.com/user-attachments/assets/6570cbfb-a154-493f-9eb0-699cd450127d)
+An OpenAI-compatible API proxy with LLM trace visualization using Phoenix and OpenInference.
 
 ## Features
 
 - OpenAI API compatible endpoints
 - Streaming and non-streaming responses
-- LLM trace visualization
-- Integration with Langfuse for observability
-- Docker-based deployment
+- LLM trace visualization using Phoenix
+- Lightweight local deployment
+- OpenTelemetry-based instrumentation
 
 ## Requirements
 
-- Python 3.8+
-- Docker
-- Docker Compose
+- Python 3.9 - 3.12
+- Poetry (for dependency management)
 
 ## Installation
 
@@ -33,21 +28,26 @@ cd LocalLLMTrace
 cp .env-example .env
 ```
 
-3. Update the `.env` file with your API keys and configuration:
+3. Update the `.env` file with your API keys:
 ```bash
 # OpenAI/DeepSeek API
 OPENAI_API_KEY=your-api-key
 OPENAI_API_URL=https://api.deepseek.com
-
-# Langfuse Configuration
-LANGFUSE_PUBLIC_KEY=your-public-key
-LANGFUSE_SECRET_KEY=your-secret-key
-LANGFUSE_HOST=https://localhost:3000
 ```
 
-4. Start the services:
+4. Install dependencies:
 ```bash
-docker-compose up -d
+poetry install
+```
+
+5. Start the development server:
+```bash
+poetry run uvicorn main:app --reload
+```
+
+6. Start Phoenix tracing UI:
+```bash
+phoenix serve
 ```
 
 ## API Documentation
@@ -91,42 +91,21 @@ curl -X POST "http://localhost:8000/chat/completions" \
 }'
 ```
 
-## Deployment
-
-The project uses Docker Compose for deployment. The following services are included:
-
-- Langfuse Web (port 3000)
-- Langfuse Worker (port 3030)
-- Postgres (port 5432)
-- Redis (port 6379)
-- Clickhouse (ports 8123, 9000)
-- MinIO (ports 9090, 9091)
-
-To start all services:
-```bash
-docker-compose up -d
-```
-
-To stop all services:
-```bash
-docker-compose down
-```
-
 ## Development
 
-1. Create a virtual environment:
-```bash
-poetry shell
-```
-
-2. Install dependencies:
+1. Install dependencies:
 ```bash
 poetry install
 ```
 
-3. Run the development server:
+2. Start the development server:
 ```bash
-uvicorn main:app --reload
+poetry run uvicorn main:app --reload
+```
+
+3. Start Phoenix tracing UI:
+```bash
+poetry run phoenix
 ```
 
 ## Configuration
@@ -135,9 +114,6 @@ The following environment variables are required:
 
 - `OPENAI_API_KEY`: Your DeepSeek API key
 - `OPENAI_API_URL`: DeepSeek API endpoint
-- `LANGFUSE_PUBLIC_KEY`: Langfuse public key
-- `LANGFUSE_SECRET_KEY`: Langfuse secret key
-- `LANGFUSE_HOST`: Langfuse host URL
 
 ## License
 
