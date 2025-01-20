@@ -93,6 +93,38 @@ curl -X POST "http://localhost:8000/chat/completions" \
 
 ## Development
 
+### Using Supervisor for Process Management
+
+1. Install Supervisor:
+```bash
+pip install supervisor
+```
+
+2. Start services:
+```bash
+supervisord -c supervisord.conf
+```
+
+3. Check service status:
+```bash
+supervisorctl -c supervisord.conf status
+```
+
+4. Common commands:
+```bash
+# Restart a service
+supervisorctl -c supervisord.conf restart [service_name]
+
+# Stop all services
+supervisorctl -c supervisord.conf shutdown
+
+# View logs
+tail -f /tmp/phoenix_out.log
+tail -f /tmp/main_out.log
+```
+
+### Manual Development
+
 1. Install dependencies:
 ```bash
 poetry install
