@@ -21,7 +21,6 @@ openai = "^1.12.0"
 arize-phoenix = "^7.8.1"
 arize-phoenix-otel = "^0.6.1"
 openinference-instrumentation-openai = "^0.1.18"
-supervisor = "^4.2.5"
 
 
 [tool.poetry.group.dev.dependencies]
